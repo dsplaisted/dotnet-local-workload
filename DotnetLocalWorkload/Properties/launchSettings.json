@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "DotnetLocalWorkload": {
+      "commandName": "Project",
+      "commandLineArgs": "install workload1 workload2"
+    }
+  }
+}
