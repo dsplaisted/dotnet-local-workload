@@ -2,7 +2,11 @@
   "profiles": {
     "DotnetLocalWorkload": {
       "commandName": "Project",
-      "commandLineArgs": "install workload1 workload2"
+      "commandLineArgs": "install workload1 workload2",
+      "environmentVariables": {
+        "DOTNETSDK_WORKLOAD_PACK_ROOTS": "C:\\git\\dotnet-local-workload\\WorkloadsWorkingArea\\packs",
+        "DOTNETSDK_WORKLOAD_MANIFEST_ROOTS": "C:\\git\\dotnet-local-workload\\WorkloadsWorkingArea\\manifests"
+      }
     }
   }
 }
