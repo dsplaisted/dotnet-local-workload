@@ -7,6 +7,9 @@
 
   <ItemGroup>
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21216.1" />
+
+  <ItemGroup>
+    <EmbeddedResource Update="DotnetSdk\*.resx" Namespace="Microsoft.DotNet.Cli.NuGetPackageDownloader" />
   </ItemGroup>
 
 </Project>
