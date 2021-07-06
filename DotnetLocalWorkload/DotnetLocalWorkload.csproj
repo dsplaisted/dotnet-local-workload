@@ -7,6 +7,15 @@
 
   <ItemGroup>
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21216.1" />
+    <PackageReference Include="NuGet.Packaging" Version="5.9.0" />
+    <PackageReference Include="NuGet.Protocol" Version="5.9.0" />
+    <PackageReference Include="NuGet.Versioning" Version="5.9.0" />
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="..\libs\Microsoft.NET.Sdk.WorkloadManifestReader.dll" />
+  </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Update="DotnetSdk\*.resx" Namespace="Microsoft.DotNet.Cli.NuGetPackageDownloader" />

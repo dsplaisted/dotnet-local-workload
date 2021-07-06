@@ -15,7 +15,11 @@ namespace DotnetLocalWorkload
         {
             var rootCommand = new RootCommand();
 
-            var installCommand = new Command("install");
+            var installCommand = new Command("install")
+            {
+                new Option<string>("--local-workload-root",
+                    getDefaultValue: () => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData, Environment.SpecialFolderOption.Create), "dotnet-local-workloads"))
+            };
             
             var workloadArgument = new Argument("workload")
             {
@@ -26,40 +30,46 @@ namespace DotnetLocalWorkload
 
             var parseResult = rootCommand.Parse(args);
 
+            string localWorkloadRoot = parseResult.ValueForOption<string>("--local-workload-root");
+            if (!Directory.Exists(localWorkloadRoot))
+            {
+                Directory.CreateDirectory(localWorkloadRoot);
+            }
+
+            string dotnetPath = ResolveCommand("dotnet");
+            string sdkVersion = ShellProcessRunner.Run(dotnetPath, "--version").GetOutput();
+
+            if (!Version.TryParse(sdkVersion.Split('-')[0], out var sdkVersionParsed))
+            {
+                throw new ArgumentException($"'{nameof(sdkVersion)}' should be a version, but get {sdkVersion}");
+            }
+
+            static int Last2DigitsTo0(int versionBuild)
+            {
+                return (versionBuild / 100) * 100;
+            }
+
+            var sdkVersionBand =
+                $"{sdkVersionParsed.Major}.{sdkVersionParsed.Minor}.{Last2DigitsTo0(sdkVersionParsed.Build)}";
+
+
             if (parseResult.CommandResult.Command == installCommand)
             {
-                var argumentResult = parseResult.ValueForArgument<List<string>>(workloadArgument);
-                Console.WriteLine("Workloads to install: " + string.Join(' ', argumentResult));
+                var workloadsToInstall = parseResult.ValueForArgument<List<string>>(workloadArgument);
+                Console.WriteLine("Workloads to install: " + string.Join(' ', workloadsToInstall));
 
-                LocalWorkloadInstaller localWorkloadInstaller = new();
-
-                var manifestRoots = Environment.GetEnvironmentVariable("DOTNETSDK_WORKLOAD_MANIFEST_ROOTS");
-                if (string.IsNullOrEmpty(manifestRoots))
+                LocalWorkloadInstaller localWorkloadInstaller = new()
                 {
-                    Console.Error.WriteLine("DOTNETSDK_WORKLOAD_MANIFEST_ROOTS not set.");
-                    return 1;
-                }
-
-                localWorkloadInstaller.SdkManifestRoots = manifestRoots.Split(Path.PathSeparator);
-
-                var packRoots = Environment.GetEnvironmentVariable("DOTNETSDK_WORKLOAD_PACK_ROOTS");
-                if (string.IsNullOrEmpty(packRoots))
-                {
-                    Console.Error.WriteLine("DOTNETSDK_WORKLOAD_PACK_ROOTS not set.");
-                    return 1;
-                }
-
-                localWorkloadInstaller.SdkPackRoots = packRoots.Split(Path.PathSeparator);
-
-                string dotnetPath = ResolveCommand("dotnet");
+                    WorkloadManifestRoot = Path.Combine(localWorkloadRoot, "sdk-manifests", sdkVersionBand),
+                    WorkloadPackRoot = Path.Combine(localWorkloadRoot, "packs"),
+                    WorkloadNuGetPackageFolder = Path.Combine(localWorkloadRoot, "NuGetPackages")
+                };
 
                 localWorkloadInstaller.DotnetRoot = Path.GetDirectoryName(dotnetPath);
 
-                string sdkVersion = ShellProcessRunner.Run(dotnetPath, "--version").GetOutput();
-
                 localWorkloadInstaller.SdkVersion = sdkVersion;
 
-                localWorkloadInstaller.Install();
+                localWorkloadInstaller.Install(workloadsToInstall);
 
 
             }

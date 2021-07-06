@@ -1,8 +1,9 @@
 // Copyright (c) .NET Foundation and contributors. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using Microsoft.DotNet.Cli.Utils;
+//using Microsoft.DotNet.Cli.Utils;
 using NuGet.Common;
+using System;
 using System.Threading.Tasks;
 
 namespace Microsoft.DotNet.Cli.NuGetPackageDownloader
@@ -53,37 +54,37 @@ namespace Microsoft.DotNet.Cli.NuGetPackageDownloader
 
         public void LogDebug(string data)
         {
-            Reporter.Verbose.WriteLine($"[NuGet Manager] [DEBUG] {data}");
+            Console.WriteLine($"[NuGet Manager] [DEBUG] {data}");
         }
 
         public void LogError(string data)
         {
-            Reporter.Error.WriteLine($"[NuGet Manager] [Error] {data}");
+            Console.WriteLine($"[NuGet Manager] [Error] {data}");
         }
 
         public void LogInformation(string data)
         {
-            Reporter.Output.WriteLine($"[NuGet Manager] [Info] {data}");
+            Console.WriteLine($"[NuGet Manager] [Info] {data}");
         }
 
         public void LogInformationSummary(string data)
         {
-            Reporter.Output.WriteLine($"[NuGet Manager] [Info Summary] {data}");
+            Console.WriteLine($"[NuGet Manager] [Info Summary] {data}");
         }
 
         public void LogMinimal(string data)
         {
-            Reporter.Output.WriteLine($"[NuGet Manager] {data}");
+            Console.WriteLine($"[NuGet Manager] {data}");
         }
 
         public void LogVerbose(string data)
         {
-            Reporter.Verbose.WriteLine($"[NuGet Manager] [Verbose] {data}");
+            Console.WriteLine($"[NuGet Manager] [Verbose] {data}");
         }
 
         public void LogWarning(string data)
         {
-            Reporter.Error.WriteLine($"[NuGet Manager] [Warning] {data}");
+            Console.WriteLine($"[NuGet Manager] [Warning] {data}");
         }
     }
 }

@@ -3,7 +3,8 @@
 
 using System;
 using System.Runtime.InteropServices;
-using Microsoft.DotNet.Cli.Utils;
+using DotnetLocalWorkload;
+//using Microsoft.DotNet.Cli.Utils;
 
 namespace Microsoft.DotNet.Tools
 {
@@ -31,15 +32,21 @@ namespace Microsoft.DotNet.Tools
                 return;
             }
 
-            CommandResult result = new CommandFactory.CommandFactory()
-                .Create("chmod", new[] {chmodArgument, path})
-                .CaptureStdOut()
-                .CaptureStdErr()
-                .Execute();
+            //CommandResult result = new CommandFactory.CommandFactory()
+            //    .Create("chmod", new[] {chmodArgument, path})
+            //    .CaptureStdOut()
+            //    .CaptureStdErr()
+            //    .Execute();
 
+            //if (result.ExitCode != 0)
+            //{
+            //    throw new FilePermissionSettingException(result.StdErr);
+            //}
+
+            var result = ShellProcessRunner.Run("chmod", chmodArgument + " " + path);
             if (result.ExitCode != 0)
             {
-                throw new FilePermissionSettingException(result.StdErr);
+                throw new Exception(result.GetOutput());
             }
         }
     }
