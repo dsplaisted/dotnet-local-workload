@@ -44,10 +44,23 @@ namespace DotnetLocalWorkload
                 var downloader = new NuGetPackageDownloader(new DirectoryPath(WorkloadNuGetPackageFolder));
                 foreach (var workloadPack in workloadPacksToInstall)
                 {
-                    Console.WriteLine($"Installing: {workloadPack.ResolvedPackageId} {workloadPack.Version}");
-                    var packagePath = downloader.DownloadPackageAsync(new PackageId(workloadPack.ResolvedPackageId), new NuGetVersion(workloadPack.Version), new PackageSourceLocation(), downloadFolder: new DirectoryPath(WorkloadNuGetPackageFolder))
-                        .GetAwaiter().GetResult();
-                    Console.WriteLine($"Downloaded to {packagePath}");
+                    var expectedPackagePath = Path.Combine(WorkloadNuGetPackageFolder, $"{workloadPack.ResolvedPackageId.ToLowerInvariant()}.{workloadPack.Version}.nupkg");
+                    if (File.Exists(expectedPackagePath))
+                    {
+                        Console.WriteLine($"Already downloaded: {workloadPack.ResolvedPackageId} {workloadPack.Version}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Downloading: {workloadPack.ResolvedPackageId} {workloadPack.Version}");
+                        var packagePath = downloader.DownloadPackageAsync(new PackageId(workloadPack.ResolvedPackageId), new NuGetVersion(workloadPack.Version), new PackageSourceLocation(), downloadFolder: new DirectoryPath(WorkloadNuGetPackageFolder))
+                            .GetAwaiter().GetResult();
+                        Console.WriteLine($"Downloaded to {packagePath}");
+
+                        if (packagePath != expectedPackagePath)
+                        {
+                            Console.WriteLine("Download path was NOT expected path: " + expectedPackagePath);
+                        }
+                    }
                 }
             }
         }
