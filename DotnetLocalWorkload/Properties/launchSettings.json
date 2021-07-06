@@ -4,8 +4,8 @@
       "commandName": "Project",
       "commandLineArgs": "install microsoft-net-sdk-blazorwebassembly-aot",
       "environmentVariables": {
-        "DOTNETSDK_WORKLOAD_PACK_ROOTS": "C:\\git\\dotnet-local-workload\\WorkloadsWorkingArea\\packs",
-        "DOTNETSDK_WORKLOAD_MANIFEST_ROOTS": "C:\\git\\dotnet-local-workload\\WorkloadsWorkingArea\\manifests"
+        "DOTNETSDK_WORKLOAD_PACK_ROOTS": "C:\\Users\\daplaist\\AppData\\Roaming\\dotnet-local-workloads\\packs",
+        "DOTNETSDK_WORKLOAD_MANIFEST_ROOTS": "C:\\Users\\daplaist\\AppData\\Roaming\\dotnet-local-workloads\\sdk-manifests"
       }
     }
   }

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using DotnetLocalWorkload;
 //using Microsoft.DotNet.Cli.CommandLine;
 //using Microsoft.DotNet.Cli.Utils;
 using Microsoft.DotNet.ToolPackage;

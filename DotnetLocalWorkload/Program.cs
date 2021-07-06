@@ -44,34 +44,41 @@ namespace DotnetLocalWorkload
                 throw new ArgumentException($"'{nameof(sdkVersion)}' should be a version, but get {sdkVersion}");
             }
 
-            static int Last2DigitsTo0(int versionBuild)
-            {
-                return (versionBuild / 100) * 100;
-            }
+            //static int Last2DigitsTo0(int versionBuild)
+            //{
+            //    return (versionBuild / 100) * 100;
+            //}
 
-            var sdkVersionBand =
-                $"{sdkVersionParsed.Major}.{sdkVersionParsed.Minor}.{Last2DigitsTo0(sdkVersionParsed.Build)}";
+            //var sdkVersionBand =
+            //    $"{sdkVersionParsed.Major}.{sdkVersionParsed.Minor}.{Last2DigitsTo0(sdkVersionParsed.Build)}";
 
 
             if (parseResult.CommandResult.Command == installCommand)
             {
                 var workloadsToInstall = parseResult.ValueForArgument<List<string>>(workloadArgument);
-                Console.WriteLine("Workloads to install: " + string.Join(' ', workloadsToInstall));
 
                 LocalWorkloadInstaller localWorkloadInstaller = new()
                 {
-                    WorkloadManifestRoot = Path.Combine(localWorkloadRoot, "sdk-manifests", sdkVersionBand),
+                    WorkloadManifestRoot = Path.Combine(localWorkloadRoot, "sdk-manifests"),
                     WorkloadPackRoot = Path.Combine(localWorkloadRoot, "packs"),
                     WorkloadNuGetPackageFolder = Path.Combine(localWorkloadRoot, "NuGetPackages")
                 };
-
                 localWorkloadInstaller.DotnetRoot = Path.GetDirectoryName(dotnetPath);
-
                 localWorkloadInstaller.SdkVersion = sdkVersion;
 
+                var manifestRoots = Environment.GetEnvironmentVariable("DOTNETSDK_WORKLOAD_MANIFEST_ROOTS")?.Split(Path.PathSeparator) ?? Array.Empty<string>();
+                if (!manifestRoots.Contains(localWorkloadInstaller.WorkloadManifestRoot))
+                {
+                    Console.WriteLine("To use local workloads, set the DOTNETSDK_WORKLOAD_MANIFEST_ROOTS environment variable to " + localWorkloadInstaller.WorkloadManifestRoot);
+                }
+
+                var packRoots = Environment.GetEnvironmentVariable("DOTNETSDK_WORKLOAD_PACK_ROOTS")?.Split(Path.PathSeparator) ?? Array.Empty<string>();
+                if (!packRoots.Contains(localWorkloadInstaller.WorkloadPackRoot))
+                {
+                    Console.WriteLine("To use local workloads, set the DOTNETSDK_WORKLOAD_PACK_ROOTS environment variable to " + localWorkloadInstaller.WorkloadPackRoot);
+                }
+
                 localWorkloadInstaller.Install(workloadsToInstall);
-
-
             }
             else
             {
